@@ -1,0 +1,201 @@
+{% load static %}
+<div class="flex items-center justify-center rounded-sm mx-auto w-full px-4 sm:px-6 lg:px-8 mb-7">
+  
+    <div class="w-full px-2 sm:px-4 md:px-6 lg:px-8">
+        <div class="relative w-full max-w-3xl mx-auto px-4 py-3 bg-gradient-to-br from-purple-300 via-pink-300 to-red-300 rounded-xl shadow-lg transition-all duration-300 focus-within:ring-4 focus-within:ring-purple-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600">
+            <textarea id="chat-input" rows="1" placeholder="Send a message..." 
+                oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';" 
+                class="block w-full p-3 bg-transparent text-sky-300 placeholder-gray-500 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                style="overflow:hidden;"></textarea>
+            
+            <button type="submit" class="absolute right-4 bottom-4 bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500 p-2 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300">
+                <img src="{% static 'images/message.png' %}" alt="Send" width="23" class="filter invert">
+            </button>
+
+            <div class="flex flex-wrap items-center mt-4 gap-3">
+                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 inline-flex items-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                    <img src="{% static 'images/plus.png' %}" alt="Add" width="15" class="filter invert">
+                </button>
+                
+                <button type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                    <img src="{% static 'images/web.png' %}" alt="Search" class="w-5 h-5 mr-2 filter invert">
+                    <span class="text-xs">Web Search</span>
+                </button>
+
+                <button type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                    <img src="{% static 'images/bulb.png' %}" alt="Reason" class="w-5 h-5 mr-2 filter invert">
+                    <span class="text-xs">DeepThinking</span>
+                </button>
+                <div class="relative inline-flex items-center px-4 py-2 text-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-[10px] dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:ring-gray-700">
+                  <img src="{% static 'images/atom.png' %}" alt="Model" class="w-5 h-5 mr-2 filter invert">
+                  <span class="text-[10px]">Model Choice</span>
+                  <div class="custom-select ml-2 w-36">
+                    <div class="select-display appearance-none bg-transparent border-none text-gray-700 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full dark:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700 px-4 py-2 pr-8 cursor-pointer">
+                      <span class="selected-option text-[10px]">Select</span>
+                    </div>
+                    <select class="hidden" id="model-select">
+                      <option value="calista:latest" data-img="{% static 'images/logo.png' %}">C.A.L.I.S.T.A</option>
+                      <option value="Deepseek R1 (1.5B)" data-img="{% static 'images/deepseek.png' %}">Deepseek R1 (1.5B)</option>
+                      <option value="Deepseek R1 (8B)" data-img="{% static 'images/deepseek.png' %}">Deepseek R1 (8B)</option>
+                      <option value="Qwen2.5 (3B)" data-img="{% static 'images/qween.png' %}">Qwen2.5 (3B)</option>
+                      <option value="Llama 3.1 (8B)" data-img="{% static 'images/metaa.png' %}">Llama 3.1 (8B)</option>
+                      <option value="Llama 3.2 (3B)" data-img="{% static 'images/metaa.png' %}">Llama 3.2 (3B)</option>
+                      <option value="Phi-4 (14B)" data-img="{% static 'images/metaa.png' %}">Phi-4 (14B)</option>
+                      <option value="Gemma 2 (9B)" data-img="{% static 'images/Google.png' %}">Gemma 2 (9B)</option>
+                      <option value="Mistral v0.3 (7B)" data-img="{% static 'images/mistral.png' %}">Mistral v0.3 (7B)</option>
+                      <option value="Llama 3.2 Vision (11B)" data-img="{% static 'images/metaa.png' %}">Llama 3.2 Vision (11B)</option>
+                      <option value="Janus Pro (7B)" data-img="{% static 'images/deepseek.png' %}">Janus Pro (7B)</option>
+                      <option value="Janus (1.3B)" data-img="{% static 'images/deepseek.png' %}">Janus (1.3B)</option>
+                    </select>
+                    <svg id="icon2" class="transform transition-transform duration-500 ease-in-out absolute ml-28 top-1/2 -translate-y-1/2 cursor-pointer" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+
+
+                    <div class="custom-options absolute hidden w-52 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50"></div>
+                  </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="conversation-wrapper"></div>
+    </div>
+</div>
+
+<script src="{% static 'js/model_run.js' %}"></script>
+
+
+
+
+<script>
+  function getNewResponseContainer() {
+    const template = document.getElementById('ai_response-template');
+    const clone = template.content.cloneNode(true);
+    const conversationWrapper = document.getElementById('conversation-wrapper');
+    conversationWrapper.appendChild(clone);
+    const newResponse = conversationWrapper.lastElementChild;
+    return newResponse.querySelector('.ai_message-text');
+  }
+
+  function getUserMessage() {
+    const template = document.getElementById('response-template_user');
+    const clone = template.content.cloneNode(true);
+    const conversationWrapper = document.getElementById('conversation-wrapper');
+    conversationWrapper.appendChild(clone);
+    const newUserMessage = conversationWrapper.lastElementChild;
+    return newUserMessage.querySelector('.user-message');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const chatInput = document.getElementById('chat-input');
+    const submitButton = chatInput?.nextElementSibling;
+    const modelSelect = document.getElementById('model-select');
+
+    // Only try to get edit button elements if they exist
+    const editButton = document.getElementById('edit-button');
+    const sendEditButton = editButton ? editButton.nextElementSibling : null;
+
+    function handleSubmit() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      const selectedModel = modelSelect.value;
+      if (!selectedModel || selectedModel === "Select") {
+        alert("Please manually select a model before sending a message");
+        return;
+      }
+
+      chatInput.value = '';
+
+      const userMessageElement = getUserMessage();
+      if (userMessageElement) {
+        userMessageElement.textContent = message;
+        userMessageElement.closest('.response-container-user').style.display = 'flex';
+      }
+
+      const targetElement = getNewResponseContainer();
+
+      fetch('/send_message/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+          message: message,
+          model: selectedModel
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Selected model not found or unavailable. Please choose another model.');
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+
+        function read() {
+          return reader.read().then(({done, value}) => {
+            if (done) {
+              chatInput.style.height = 'auto';
+              return;
+            }
+            let text = decoder.decode(value, {stream: true});
+
+            if (targetElement) {
+              targetElement.textContent += text;
+              targetElement.closest('.ai_response-container').style.display = 'flex';
+            }
+            return read();
+          });
+        }
+        return read();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error: ' + error.message + '\nPlease select a different model and try again.');
+      });
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    if (submitButton) {
+      submitButton.addEventListener('click', handleSubmit);
+    }
+
+    if (chatInput) {
+      chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleSubmit();
+        }
+      });
+    }
+
+    if (sendEditButton) {
+      sendEditButton.addEventListener('click', handleSubmit);
+    }
+
+    if (editButton) {
+      editButton.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleSubmit();
+        }
+      });
+    }
+  });
+</script>

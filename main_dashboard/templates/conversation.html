@@ -1,0 +1,286 @@
+{% load static %}
+
+<div id="mainContainer" class="flex flex-col h-screen">
+
+  <div class="flex-grow space-y-4 p-4 overflow-y-auto w-full" style="max-height: calc(100vh - 2rem);">
+
+    <br>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="flex flex-col space-y-4 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="flex items-start gap-10">
+        <img src="{% static 'images/calista.png' %}" alt="Calista avatar" class="w-10 h-10 rounded-full flex-shrink-0 border-2 border-indigo-300">
+        <div class="bg-gradient-to-r from-green-300 to-blue-300 text-gray-900 rounded-lg px-4 py-2 max-w-[80%] shadow-lg transform transition duration-300 hover:scale-105">
+          <span class="text-sm font-semibold">
+            Welcome To C.A.L.I.S.T.A
+          </span>
+        </div>
+      </div>
+
+
+      <!-- Container for user messages -->
+      <div id="conversation-wrapper" class="space-y-8"></div>
+      <template id="response-template_user">
+        <div class="flex justify-end items-center gap-2 response-container-user my-8" style="display: none;">
+          <button id="edit-button" onclick="editMessage(this)" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full p-2 hover:opacity-80 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </button>
+          <div class="bg-gradient-to-r from-indigo-500 to-cyan-500 text-white rounded-lg px-4 py-2 max-w-[80%] shadow-lg transform transition duration-300 hover:scale-105">
+            <span class="text-sm font-semibold user-message" contenteditable="false" data-edit-mode="false" onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if(!this.textContent.trim()) return; editMessage(this.closest('.response-container-user').querySelector('#edit-button')); }"></span>
+          </div>
+        </div>
+      </template>
+
+      <!-- Container for AI responses -->
+      <div id="conversation-wrapper" class="space-y-8"></div>
+      
+      <!-- Response container template -->
+      <template id="ai_response-template">
+        <div class="flex items-start gap-10 ai_response-container my-8" style="display: none;">
+          <img src="{% static 'images/calista.png' %}" alt="Calista avatar" class="w-10 h-10 rounded-full flex-shrink-0 border-2 border-indigo-300">
+          <div class="bg-gradient-to-r to-slate-700 text-gray-900 rounded-lg px-4 py-2 max-w-[80%] shadow-lg transform transition duration-300 hover:scale-105">
+            <button onclick="copyText(this)" class="bg-gradient-to-r to-gray-800 text-white rounded-full p-2 hover:opacity-80 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+            </button>
+            <br>
+            <span class="text-sm font-semibold whitespace-pre-wrap text-white ai_message-text"></span>
+            <br>
+          </div>
+        </div>
+      </template>
+
+      
+    </div>
+
+
+
+    <script>
+      (function() {
+        const spanEl = document.getElementById('message-text');
+        const text = spanEl.textContent;
+        if (text.length > 110) {
+          let formatted = '';
+          for (let i = 0; i < text.length; i += 110) {
+            formatted += text.substring(i, i + 110) + (i + 110 < text.length ? '<br>' : '');
+          }
+          spanEl.innerHTML = formatted;
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Fixed Open Modal Button -->
+
+
+  <!-- Colorful Modal -->
+  <div id="colorfulModal" class="fixed inset-0 hidden flex items-center justify-center z-50">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg p-6 shadow-xl max-w-md mx-auto">
+      <h2 class="text-2xl font-bold text-white mb-4">Colorful Modal</h2>
+      <p class="text-white">This modal is bursting with colors to make it more interesting!</p>
+      <button id="closeModal" class="mt-4 bg-white text-indigo-600 font-semibold px-4 py-2 rounded hover:bg-gray-200">Close</button>
+    </div>
+  </div>
+
+
+
+  <!-- Footer always under the conversation container -->
+  <footer class="">
+    {% include 'jumbotorn.html' %}
+  </footer>
+
+
+
+  <div >
+    {% include 'code_simulation.html' %}
+  </div>
+
+ 
+
+</div>
+
+<script>
+  // Global helper to fetch CSRF token (make sure it's available in the global scope)
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // Function to submit an edited message to the server
+  function submitEditedMessage(message) {
+    if (!message) return;
+    const modelSelect = document.getElementById('model-select');
+    const selectedModel = modelSelect.value;
+    if (!selectedModel || selectedModel === "Select") {
+      alert("Please manually select a model before sending a message");
+      return;
+    }
+    // Use the same function you use when sending a new message.
+    // Assumes getNewResponseContainer() is globally available to create the bot response container.
+    const targetElement = getNewResponseContainer();
+
+    fetch('/send_message/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        message: message,
+        model: selectedModel
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Selected model not found or unavailable. Please choose another model.');
+      }
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+
+      function read() {
+        return reader.read().then(({ done, value }) => {
+          if (done) return;
+          let text = decoder.decode(value, { stream: true });
+          if (targetElement) {
+            targetElement.textContent += text;
+            targetElement.closest('.ai_response-container').style.display = 'flex';
+          }
+          return read();
+        });
+      }
+      return read();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error: ' + error.message + '\nPlease select a different model and try again.');
+    });
+  }
+
+  // Updated editMessage function for the edit button
+  function editMessage(button) {
+    const container = button.closest('.response-container-user');
+    const messageSpan = container.querySelector('.user-message');
+    
+    // If the span is already editable, that means the user is finishing editing.
+    // Disable editing and submit the updated message.
+    if (messageSpan.getAttribute('contenteditable') === 'true') {
+      messageSpan.setAttribute('contenteditable', 'false');
+      messageSpan.blur();
+      // Send the edited message to /send_message/
+      submitEditedMessage(messageSpan.textContent.trim());
+    } else {
+      // If not in editing mode, enable editing.
+      messageSpan.setAttribute('contenteditable', 'true');
+      messageSpan.style.outline = 'none';
+      messageSpan.focus();
+
+      // Move the caret to the end of the content.
+      const range = document.createRange();
+      range.selectNodeContents(messageSpan);
+      range.collapse(false);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
+</script>
+
+<script>
+  function copyText(button) {
+    const textElement = button.parentElement.querySelector('.message-text');
+    const text = textElement.textContent;
+    
+    navigator.clipboard.writeText(text.trim()).then(() => {
+      // Show a temporary success message
+      const originalBg = button.className;
+      button.className = "bg-green-500 text-white rounded-full p-2";
+      button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>`;
+      
+      setTimeout(() => {
+        button.className = originalBg;
+        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+        </svg>`;
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
+  }
+</script>
+
+
+
+
+<script>
+  const sidebar = document.getElementById('codeSimulationSidebar');
+  const sidebar2 = document.getElementById('codeSimulationSidebar2');
+  const closeButton3 = document.getElementById('closeSidebarBtn3');
+  const closeButton4 = document.getElementById('closeSidebarBtn4');
+  const closeButton = document.getElementById('closeSidebarBtn');
+  const closeButton2 = document.getElementById('closeSidebarBtn2');
+  const mainContainer = document.getElementById('mainContainer');
+  let isOpen = false;
+  let isOpen2 = false;
+
+  // Initially hide the buttons
+  closeButton.style.display = 'none';
+  closeButton3.style.display = 'none';
+
+  function toggleSidebar(sidebarEl, isOpenFlag, button) {
+    if (!isOpenFlag) {
+      sidebarEl.classList.remove('translate-x-full');
+      mainContainer.classList.add('pr-[32rem]');
+      button.style.right = 'calc(1.5rem + 40rem)';
+      return true;
+    } else {
+      sidebarEl.classList.add('translate-x-full');
+      mainContainer.classList.remove('pr-[32rem]');
+      button.style.right = '';
+      return false;
+    }
+  }
+
+  closeButton.addEventListener('click', () => {
+    isOpen = toggleSidebar(sidebar, isOpen, closeButton);
+  });
+
+  closeButton2.addEventListener('click', () => {
+    isOpen = toggleSidebar(sidebar, isOpen, closeButton);
+  });
+
+  closeButton3.addEventListener('click', () => {
+    isOpen2 = toggleSidebar(sidebar2, isOpen2, closeButton3);
+  });
+
+  closeButton4.addEventListener('click', () => {
+    isOpen2 = toggleSidebar(sidebar2, isOpen2, closeButton3);
+  });
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism-tomorrow.min.css" />
+
+<!-- Before </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-python.min.js"></script>
+

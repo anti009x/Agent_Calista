@@ -1,0 +1,50 @@
+import ollama
+from django.http import StreamingHttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def process_message(request):
+    try:
+        data = json.loads(request.body)
+        prompt = data.get('message')
+        model_choice = data.get('model', 'calista:latest')  
+        
+        if not prompt:
+            return JsonResponse({'error': 'No message provided'}, status=400)
+
+
+        response_stream = ollama.generate(
+            model=model_choice.lower(),
+            prompt=prompt,
+            stream=True
+        )
+
+
+        def stream_response():
+            for chunk in response_stream:
+                text = chunk.get('response', '')
+                yield text
+
+
+        return StreamingHttpResponse(stream_response(), content_type='text/plain')
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+def prompt_model(prompt, model="calista:latest"):
+    response = ""
+    response_stream = ollama.generate(
+        model=model,
+        prompt=prompt,
+        stream=True
+    )
+
+    for chunk in response_stream:
+        response += chunk.get('response', '')
+    return response

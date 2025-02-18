@@ -1,0 +1,267 @@
+{% load static %}
+
+<div id="mainContainer" class="flex flex-col h-screen">
+
+  <div class="flex-grow space-y-4 p-4 overflow-y-auto w-full" style="max-height: calc(100vh - 2rem);">
+
+    <br>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="flex flex-col space-y-4 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="flex items-start gap-10">
+        <img src="{% static 'images/calista.png' %}" alt="Calista avatar" class="w-10 h-10 rounded-full flex-shrink-0 border-2 border-indigo-300">
+        <div class="bg-gradient-to-r from-green-300 to-blue-300 text-gray-900 rounded-lg px-4 py-2 max-w-[80%] shadow-lg transform transition duration-300 hover:scale-105">
+          <span class="text-sm font-semibold">
+            Welcome To C.A.L.I.S.T.A
+          </span>
+        </div>
+      </div>
+
+
+      <div class="flex justify-end items-center gap-2">
+        <button onclick="editMessage(this)" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full p-2 hover:opacity-80 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+        </button>
+        <div class="bg-gradient-to-r from-indigo-500 to-cyan-500 text-white rounded-lg px-4 py-2 max-w-[80%] shadow-lg transform transition duration-300 hover:scale-105">
+          <span class="text-sm font-semibold" contenteditable="false">What Is Speed Of Light? Can you help me?</span>
+        </div>
+      </div>
+   
+
+
+      <div class="flex items-start gap-10 mt-7">
+
+        <img src="{% static 'images/calista.png' %}" alt="Calista avatar" class="w-10 h-10 rounded-full flex-shrink-0 border-2 border-indigo-300">
+        <div class="bg-gradient-to-r  to-slate-700 text-gray-900 rounded-lg px-4 py-2 max-w-[80%] shadow-lg transform transition duration-300 hover:scale-105">
+          <button onclick="copyText(this)" class="bg-gradient-to-r  to-gray-800 text-white rounded-full p-2 hover:opacity-80 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+          </button>
+          <br>
+
+          <span id="message-text" class="text-sm font-semibold whitespace-pre-wrap text-white bg-gray-800 rounded " >
+            Response From C.A.L.I.S.T.A
+          </span>
+          <br>
+          <div>
+        <div class="flex items-center justify-center">
+          <button onclick="copyCode(this)" class="mr-4 bg-gradient-to-r  to-gray-800 text-white rounded-full p-2 hover:opacity-80 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+          </button>
+        </div>
+
+        
+        {% comment %} <div class="flex items-start justify-start">
+          <pre  class="w-full max-w-full text-sm font-semibold whitespace-pre-wrap   rounded-lg p-4 overflow-x-auto" style="background-color: #1a202c;">
+            <code class="language-python block p-4 bg-gray-800 rounded" id="message-text2">
+# Position of x starts at 0
+x = 0
+
+# Loop through positions 0 to 5
+for x in range(6):
+    print(f"Current position: {x}")
+    if x == 3:
+        print("Reached position 3, stopping...")
+        break
+else:
+    print("Completed all positions!")
+            </code>
+          </pre>
+        </div>
+        <script>
+          function copyCode(button) {
+            // Get the code container from the next sibling of the button's parent
+            const codeContainer = button.parentElement.nextElementSibling;
+            if (!codeContainer) {
+              console.error('Code container not found.');
+              return;
+            }
+            const codeElement = codeContainer.querySelector('code');
+            if (!codeElement) {
+              console.error('Code element not found.');
+              return;
+            }
+            const codeText = codeElement.innerText;
+            navigator.clipboard.writeText(codeText.trim()).then(() => {
+              const originalContent = button.innerHTML;
+              const originalClasses = button.className;
+              // Change the button to green to indicate a successful copy
+              button.className = "bg-green-500 text-white rounded-full p-2";
+              button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>`;
+              setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.className = originalClasses;
+              }, 2000);
+            }).catch(err => {
+              console.error('Failed to copy code:', err);
+            });
+          }
+        </script>
+        </div> {% endcomment %}
+          
+        </div>
+        
+      </div>
+
+      
+    </div>
+
+
+
+    <script>
+      (function() {
+        const spanEl = document.getElementById('message-text');
+        const text = spanEl.textContent;
+        if (text.length > 110) {
+          let formatted = '';
+          for (let i = 0; i < text.length; i += 110) {
+            formatted += text.substring(i, i + 110) + (i + 110 < text.length ? '<br>' : '');
+          }
+          spanEl.innerHTML = formatted;
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Fixed Open Modal Button -->
+
+
+  <!-- Colorful Modal -->
+  <div id="colorfulModal" class="fixed inset-0 hidden flex items-center justify-center z-50">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg p-6 shadow-xl max-w-md mx-auto">
+      <h2 class="text-2xl font-bold text-white mb-4">Colorful Modal</h2>
+      <p class="text-white">This modal is bursting with colors to make it more interesting!</p>
+      <button id="closeModal" class="mt-4 bg-white text-indigo-600 font-semibold px-4 py-2 rounded hover:bg-gray-200">Close</button>
+    </div>
+  </div>
+
+
+
+  <!-- Footer always under the conversation container -->
+  <footer class="">
+    {% include 'jumbotorn.html' %}
+  </footer>
+
+
+
+  <div >
+    {% include 'code_simulation.html' %}
+  </div>
+
+ 
+
+</div>
+
+<script>
+  function editMessage(button) {
+    const messageSpan = button.nextElementSibling.querySelector('span');
+    messageSpan.contentEditable = !messageSpan.isContentEditable;
+    if (messageSpan.contentEditable === 'true') {
+      messageSpan.style.outline = 'none';
+      messageSpan.focus();
+      // Move the caret to the end of the content
+      const range = document.createRange();
+      range.selectNodeContents(messageSpan);
+      range.collapse(false);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } else {
+      messageSpan.blur(); // End focus when editing is complete
+    }
+  }
+</script>
+
+<script>
+  function copyText(button) {
+    const textElement = button.parentElement.querySelector('#message-text');
+    const text = textElement.textContent;
+    
+    navigator.clipboard.writeText(text.trim()).then(() => {
+      // Show a temporary success message
+      const originalBg = button.className;
+      button.className = "bg-green-500 text-white rounded-full p-2";
+      button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>`;
+      
+      setTimeout(() => {
+        button.className = originalBg;
+        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+        </svg>`;
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
+  }
+</script>
+
+
+
+
+<script>
+  const sidebar = document.getElementById('codeSimulationSidebar');
+  const sidebar2 = document.getElementById('codeSimulationSidebar2');
+  const closeButton3 = document.getElementById('closeSidebarBtn3');
+  const closeButton4 = document.getElementById('closeSidebarBtn4');
+  const closeButton = document.getElementById('closeSidebarBtn');
+  const closeButton2 = document.getElementById('closeSidebarBtn2');
+  const mainContainer = document.getElementById('mainContainer');
+  let isOpen = false;
+  let isOpen2 = false;
+
+  // Initially hide the buttons
+  closeButton.style.display = 'none';
+  closeButton3.style.display = 'none';
+
+  function toggleSidebar(sidebarEl, isOpenFlag, button) {
+    if (!isOpenFlag) {
+      sidebarEl.classList.remove('translate-x-full');
+      mainContainer.classList.add('pr-[32rem]');
+      button.style.right = 'calc(1.5rem + 40rem)';
+      return true;
+    } else {
+      sidebarEl.classList.add('translate-x-full');
+      mainContainer.classList.remove('pr-[32rem]');
+      button.style.right = '';
+      return false;
+    }
+  }
+
+  closeButton.addEventListener('click', () => {
+    isOpen = toggleSidebar(sidebar, isOpen, closeButton);
+  });
+
+  closeButton2.addEventListener('click', () => {
+    isOpen = toggleSidebar(sidebar, isOpen, closeButton);
+  });
+
+  closeButton3.addEventListener('click', () => {
+    isOpen2 = toggleSidebar(sidebar2, isOpen2, closeButton3);
+  });
+
+  closeButton4.addEventListener('click', () => {
+    isOpen2 = toggleSidebar(sidebar2, isOpen2, closeButton3);
+  });
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism-tomorrow.min.css" />
+
+<!-- Before </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-python.min.js"></script>
+

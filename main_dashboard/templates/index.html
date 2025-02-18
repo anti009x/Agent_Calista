@@ -1,0 +1,29 @@
+{% load static tailwind_tags %}
+
+<head>
+   {% tailwind_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.js"></script>
+</head>
+
+<body class=" h-screen bg-gradient-to-br from-gray-50 dark:from-gray-800 to-blue-100 dark:to-gray-900" >
+    <div>
+    {% include 'navbar.html' %}
+    </div>
+    <div>
+    {% include 'aside.html' %}
+    </div>
+
+
+
+        <div class="ml-32">
+
+        {% include 'conversation.html' %}
+        </div>
+
+
+    {% comment %} <footer class="bg-gray-100 fixed bottom-0 w-full">
+       
+    </footer>  {% endcomment %}
+</body>

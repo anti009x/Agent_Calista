@@ -1,0 +1,151 @@
+{% load static %}
+
+
+  <div class="flex flex-col ">
+    <aside id="codeSimulationSidebar" class="fixed right-0 top-0 flex flex-col items-center justify-center h-screen w-full md:w-[40rem] bg-gradient-to-br from-gray-50 dark:from-gray-800 to-blue-100 dark:to-gray-900 shadow-lg z-10 transform translate-x-full transition-transform duration-300">
+      <h1 class="text-xl md:text-2xl font-bold text-white text-center mb-4">
+        Code Simulation
+      </h1>
+
+      <button id="openCommandPromptBtn" onclick="openCMD(); this.style.display='none';" class="text-xl md:text-2xl font-bold text-white text-center mb-4">
+        Open Command Prompt
+      </button>
+      <br>
+      <br>
+      <button id="closeSidebarBtn2" class="bg-gradient-to-r  via-slate-800 to-gray-900 hover:from-gray-800 hover:via-gray-800 hover:to-gray-800 text-white text-xl md:text-2xl font-bold text-center py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-110 mt-6">
+        ✖
+      </button>
+      <!-- Terminal output and input will be added dynamically -->
+    </aside>
+
+    <button id="closeSidebarBtn" onclick="this.style.display='none';z" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 hover:from-yellow-500 hover:via-red-600 hover:to-purple-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base rounded-lg focus:outline-none shadow-lg">
+      Open And Close Code Simulation
+    </button>
+  </div>
+
+  <div class="flex flex-col space-y-4 md:space-y-8 ">
+    <aside id="codeSimulationSidebar2" class="fixed right-0 top-0 flex flex-col items-center justify-center h-screen w-full md:w-[40rem] bg-gradient-to-br from-gray-50 dark:from-gray-800 to-blue-100 dark:to-gray-900 shadow-lg z-10 transform translate-x-full transition-transform duration-300">
+      <h1 class="text-xl md:text-2xl font-bold text-white text-center mb-4">
+        Particle Simulation
+      </h1>
+      <button id="closeSidebarBtn4" class="text-xl md:text-2xl font-bold text-white text-center">
+        X
+      </button>
+    </aside>
+
+    <button id="closeSidebarBtn3" class="fixed bottom-20 right-4 md:bottom-24 md:right-6 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 hover:from-yellow-500 hover:via-red-600 hover:to-purple-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base rounded-lg focus:outline-none shadow-lg">
+      Particle Simulation
+    </button>
+  </div>
+
+
+
+  
+ <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+  <script src="{% static 'pyodide/console.py' %}"></script> 
+
+  <script>
+ // Global variable for Pyodide
+    let pyodide = null;
+    
+    // Load the Pyodide interpreter asynchronously on page load
+    async function loadPython() {
+      try {
+        pyodide = await loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.27.2/full/"
+        });
+        // Define a helper Python function that captures any printed output.
+        await pyodide.runPythonAsync(`
+import sys, io
+def run_and_capture(code):
+    _buf = io.StringIO()
+    _old_stdout = sys.stdout
+    sys.stdout = _buf
+    try:
+        exec(code)
+    finally:
+        sys.stdout = _old_stdout
+    return _buf.getvalue()
+        `);
+        console.log("Pyodide loaded successfully!");
+      } catch (error) {
+        console.error("Error loading Pyodide:", error);
+      }
+    }
+    
+    // Call loadPython when the page loads
+    window.addEventListener('load', loadPython);
+    
+    // Function to execute a Python command asynchronously and capture stdout
+    async function runPythonCommand(command) {
+      try {
+        // Use the helper function so that printed output is returned.
+        let result = await pyodide.runPythonAsync(`run_and_capture("""${command}""")`);
+        return result;
+      } catch (error) {
+        return error.toString();
+      }
+    } 
+    
+    // openCMD() creates a terminal-like interface to type Python commands.
+    function openCMD() {
+      var simulationSidebar = document.getElementById('codeSimulationSidebar');
+      var terminalOutput = simulationSidebar.querySelector('.terminal-output');
+      
+      // Create terminal output if it doesn't exist
+      if (!terminalOutput) {
+        terminalOutput = document.createElement('div');
+        terminalOutput.className = 'terminal-output mt-4 p-4 w-full h-[30vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] xl:h-[70vh] bg-black text-green-500 font-mono text-xs sm:text-sm md:text-base rounded overflow-y-auto';
+        terminalOutput.style.whiteSpace = 'pre-wrap';
+        simulationSidebar.appendChild(terminalOutput);
+      }
+      
+      // Create a textarea for Python commands if not already present
+      var inputField = simulationSidebar.querySelector('.python-input');
+      if (!inputField) {
+        // Create a container div for input and button
+        var inputContainer = document.createElement('div');
+        inputContainer.className = 'flex flex-col space-y-2 w-full p-2';
+        
+        // Create textarea
+        inputField = document.createElement('textarea');
+        inputField.className = 'python-input p-2 mt-2 bg-gray-700 text-white rounded';
+        inputField.style.width = '100%';
+        inputField.style.height = '100px';
+        inputField.setAttribute("placeholder", "Type Python command and press Ctrl+Enter to run");
+        
+        // Create send button
+        var sendButton = document.createElement('button');
+        sendButton.className = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded';
+        sendButton.textContent = 'Send';
+        sendButton.onclick = async function() {
+          var command = inputField.value;
+          terminalOutput.textContent += "\n>>> " + command;
+          let result = await runPythonCommand(command);
+          terminalOutput.textContent += "\nOutput_Program: " + result;
+          inputField.value = "";
+        };
+        
+        // Add elements to container
+        inputContainer.appendChild(inputField);
+        inputContainer.appendChild(sendButton);
+        simulationSidebar.appendChild(inputContainer);
+        
+        // Listen for Ctrl+Enter key presses on the textarea
+        inputField.addEventListener("keydown", async function(event) {
+          if (event.key === 'Enter' && event.ctrlKey) {
+            event.preventDefault(); // Prevent default newline
+            var command = inputField.value;
+            terminalOutput.textContent += "\n>>> " + command;
+            let result = await runPythonCommand(command);
+            // Append the captured output regardless of whether it's empty.
+            terminalOutput.textContent += "\nOutput_Program: " + result;
+            inputField.value = "";
+          }
+        });
+      }
+      
+      // Make the sidebar visible by removing the off-screen transform.
+      simulationSidebar.classList.remove('translate-x-full');
+    }
+  </script>

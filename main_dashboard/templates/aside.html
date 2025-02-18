@@ -1,0 +1,336 @@
+{% load static %}
+<button id="sidebar-toggle-button" type="button" class="fixed top-3 left-1 z-50 font-medium rounded-lg text-sm px-4 py-4">
+    <img src="{% static 'images/menu.png' %}" alt="Menu" width="24" height="24" class="w-6 h-6 mt-1" style="filter: invert(1);">
+</button>
+
+<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
+  <div class="h-full pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+    <div class="flex flex-col h-full justify-between ">
+      <div class="flex items-center justify-center mx-auto mt-4">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-10 h-10  rounded-full">
+   
+        <p class="text-2xl font-semibold bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 bg-clip-text text-transparent animate-pulse hover:scale-105 transition-transform duration-300">C.A.L.I.S.T.A</p>
+      </div>
+
+      <div class="flex flex-col flex-1 ">
+        <div class="flex flex-col justify-start items-center pl-4 w-full border-gray-600 border-b space-y-3 pb-5">
+
+        </div>
+
+        <div class="flex flex-col justify-start items-center px-6 border-b border-gray-600 w-full mt-2 mb-2">
+          <button onclick="showMenu1(true)" class="group focus:outline-none text-left text-white flex justify-between items-center w-full py-5 space-x-14 transition-all duration-300 ease-in-out transform hover:scale-105 rounded-lg shadow-lg">
+            <div class="flex items-center space-x-3">
+              <svg class="w-6 h-6 text-gray-300 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <p class="text-sm leading-5 uppercase tracking-wide font-semibold">History</p>
+            </div>
+            <svg id="icon1" class="transform transition-transform duration-500 ease-in-out group-hover:rotate-180" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div id="menu1" class="hidden flex flex-col w-full items-start space-y-2 overflow-hidden transition-all duration-500">
+            <button class="flex items-center space-x-3 px-4 py-3 transition-all duration-300 rounded-lg text-gray-300 hover:text-white w-full group">
+              <svg class="w-6 h-6 text-gray-300 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 10L11 14L17 20L21 4L3 11L7 13L9 19L12 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <p class="text-base leading-4 font-medium">Bagaimana cara menutup...</p>
+              <span class="ml-auto text-xs text-gray-400 group-hover:text-white">2h ago</span>
+            </button>
+          </div>
+        </div>
+
+
+        
+        <div class="flex flex-col justify-start items-center px-6 border-b border-gray-600 w-full mt-2 mb-2">
+          <button onclick="showMenu2(true)" class="group focus:outline-none text-left text-white flex justify-between items-center w-full py-5 space-x-14 transition-all duration-300 ease-in-out transform hover:scale-105 rounded-lg shadow-lg">
+            <div class="flex items-center space-x-3">
+              <svg class="w-6 h-6 text-gray-300 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <p class="text-sm leading-5 uppercase tracking-wide font-semibold">Service</p>
+            </div>
+            <svg id="icon2" class="transform transition-transform duration-500 ease-in-out group-hover:rotate-180" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div id="menu2" class="hidden flex flex-col w-full items-start space-y-2 overflow-hidden transition-all duration-500 mb-2 mt-2">
+           
+            <div id="button-groups">
+              <!-- Group 1: Initially visible -->
+              <div class="button-group flex flex-wrap justify-center gap-1" data-group="1">
+                  <button onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-6 h-6 mr-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" style="-webkit-mask: url('{% static 'images/image.png' %}') no-repeat center / contain; mask: url('{% static 'images/image.png' %}') no-repeat center / contain;"></div>
+                              <span class="font-semibold bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                  Create Image
+                              </span>
+                          </div>
+                      </span>
+                  </button>
+          
+                                  <button id="code_simulation" onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-sky-400 via-indigo-500 to-violet-500" style="-webkit-mask: url('{% static 'images/code.png' %}') no-repeat center / contain; mask: url('{% static 'images/code.png' %}') no-repeat center / contain;"></div>
+                              <span class="font-semibold bg-gradient-to-r from-sky-400 via-indigo-500 to-violet-500 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                  Code
+                              </span>
+                          </div>
+                      </span>
+                  </button>
+                  
+  
+
+                  <button id="ScienceMolekulParticle" onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                    <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 mr-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600" style="-webkit-mask: url('{% static 'images/gift.png' %}') no-repeat center / contain; mask: url('{% static 'images/gift.png' %}') no-repeat center / contain;"></div>
+                            <span class="font-semibold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                Science Molekul Particle
+                            </span>
+                        </div>
+                    </span>
+                </button>
+              
+                  <button id="more-btn" onclick="cycleButtons()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-amber-500 to-cyan-500" style="-webkit-mask: url('{% static 'images/read-more.png' %}') no-repeat center / contain; mask: url('{% static 'images/read-more.png' %}') no-repeat center / contain;"></div>
+                          </div>
+                      </span>
+                  </button>
+              </div>
+          
+              <!-- Group 2: Initially hidden -->
+              <div class="button-group hidden flex flex-wrap justify-center gap-1" data-group="2">
+                                  <button onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-teal-400 via-cyan-500 to-blue-500" style="-webkit-mask: url('{% static 'images/eye.png' %}') no-repeat center / contain; mask: url('{% static 'images/eye.png' %}') no-repeat center / contain;"></div>
+                              <span class="font-semibold bg-gradient-to-r from-teal-400 via-cyan-500 to-blue-500 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                  Analyze Image
+                              </span>
+                          </div>
+                      </span>
+                  </button>
+          
+                                  <button onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500" style="-webkit-mask: url('{% static 'images/bulb.png' %}') no-repeat center / contain; mask: url('{% static 'images/bulb.png' %}') no-repeat center / contain;"></div>
+                              <span class="font-semibold bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                  Change Voice To Text
+                              </span>
+                          </div>
+                      </span>
+                  </button>
+          
+                                  <button onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500" style="-webkit-mask: url('{% static 'images/graduate-hat.png' %}') no-repeat center / contain; mask: url('{% static 'images/graduate-hat.png' %}') no-repeat center / contain;"></div>
+                              <span class="font-semibold bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                  Change Text To Voice
+                              </span>
+                          </div>
+                      </span>
+                  </button>
+                  <button id="more-btn" onclick="cycleButtons()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-amber-500 to-cyan-500" style="-webkit-mask: url('{% static 'images/read-more.png' %}') no-repeat center / contain; mask: url('{% static 'images/read-more.png' %}') no-repeat center / contain;"></div>
+                          </div>
+                      </span>
+                  </button>
+              </div>
+          
+              <!-- Group 3: Initially hidden -->
+              <div class="button-group hidden flex flex-wrap justify-center gap-1" data-group="3">
+                                  <button onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-teal-400 via-green-500 to-lime-500" style="-webkit-mask: url('{% static 'images/analytics.png' %}') no-repeat center / contain; mask: url('{% static 'images/analytics.png' %}') no-repeat center / contain;"></div>
+                              <span class="font-semibold bg-gradient-to-r from-teal-400 via-green-500 to-lime-500 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                  Make A Plan
+                              </span>
+                          </div>
+                      </span>
+                  </button>
+          
+                                  <button onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-orange-500 via-red-500 to-purple-600" style="-webkit-mask: url('{% static 'images/edit.png' %}') no-repeat center / contain; mask: url('{% static 'images/edit.png' %}') no-repeat center / contain;"></div>
+                              <span class="font-semibold bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                  Help Me Write Story
+                              </span>
+                          </div>
+                      </span>
+                  </button>
+          
+                  
+
+                  <button onclick="handleImageCreate()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden text-sm font-medium ">
+                    <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 mr-2 bg-gradient-to-r from-lime-400 via-green-500 to-teal-400" style="-webkit-mask: url('{% static 'images/summary.png' %}') no-repeat center / contain; mask: url('{% static 'images/summary.png' %}') no-repeat center / contain;"></div>
+                            <span class="font-semibold bg-gradient-to-r from-lime-400 via-green-500 to-teal-400 bg-clip-text text-transparent hover:scale-90 transition-transform duration-300">
+                                Summarize Text
+                            </span>
+                        </div>
+                    </span>
+                </button>
+        
+                  <button id="more-btn" onclick="cycleButtons()" class="relative inline-flex items-center justify-between p-0.5 overflow-hidden ">
+                      <span class="relative px-3 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md">
+                          <div class="flex items-center">
+                              <div class="w-5 h-5 mr-2 bg-gradient-to-r from-amber-500 to-cyan-500" style="-webkit-mask: url('{% static 'images/read-more.png' %}') no-repeat center / contain; mask: url('{% static 'images/read-more.png' %}') no-repeat center / contain;"></div>
+                          </div>
+                      </span>
+                  </button>
+              </div>
+            </div>
+
+ 
+          </div>
+
+          
+            {% comment %} <button class="menu-item-button flex w-full px-4 py-3 transition-all duration-300 rounded-lg text-gray-700 bg-white hover:bg-gray-100 shadow-sm">
+              <svg class="w-5 h-5 text-green-500 transition-colors duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 10L11 14L17 20L21 4L3 11L7 13L9 19L12 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <p class="leading-4 font-medium">Create Text To Voice</p>
+            </button>
+            <button class="menu-item-button flex w-full px-4 py-3 transition-all duration-300 rounded-lg text-gray-700 bg-white hover:bg-gray-100 shadow-sm">
+              <svg class="w-5 h-5 text-purple-500 transition-colors duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 10L11 14L17 20L21 4L3 11L7 13L9 19L12 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <p class="leading-4 font-medium">Create Voice To Text</p>
+            </button> {% endcomment %}
+          </div>
+        </div>
+
+
+      </div>
+
+      {% comment %} <div class="flex justify-between items-center w-full px-6 pt-4">
+       
+      </div> {% endcomment %}
+    </div>
+  </div>
+</aside>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Menu toggle functions
+  const menus = {
+    1: { icon: document.getElementById("icon1"), menu: document.getElementById("menu1") },
+    2: { icon: document.getElementById("icon2"), menu: document.getElementById("menu2") },
+    3: { icon: document.getElementById("icon3"), menu: document.getElementById("menu3") },
+    4: { icon: document.getElementById("icon4"), menu: document.getElementById("menu4") }
+  };
+
+  let isCodeSimulationOpen = true;
+  document.getElementById('code_simulation').addEventListener('click', () => {
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    if (closeSidebarBtn) {
+      if (isCodeSimulationOpen) {
+        closeSidebarBtn.style.display = 'block';
+        isCodeSimulationOpen = false;
+      } else {
+        closeSidebarBtn.style.display = 'none'; 
+        isCodeSimulationOpen = true;
+      }
+    }
+  });
+
+
+  let ScienceMolekulParticle= true;
+  document.getElementById('ScienceMolekulParticle').addEventListener('click', () => {
+    const closeSidebarBtn3 = document.getElementById('closeSidebarBtn3');
+    if (closeSidebarBtn3) {
+      if (isCodeSimulationOpen) {
+        closeSidebarBtn3.style.display = 'block';
+        isCodeSimulationOpen = false;
+      } else {
+        closeSidebarBtn3.style.display = 'none'; 
+        isCodeSimulationOpen = true;
+      }
+    }
+  });
+
+  window.showMenu1 = (flag) => toggleMenu(1, flag);
+  window.showMenu2 = (flag) => toggleMenu(2, flag);
+  window.showMenu3 = (flag) => toggleMenu(3, flag);
+  window.showMenu4 = (flag) => toggleMenu(4, flag);
+
+  function toggleMenu(menuNum, flag) {
+    if (flag && menus[menuNum].icon && menus[menuNum].menu) {
+      menus[menuNum].icon.classList.toggle("rotate-180");
+      menus[menuNum].menu.classList.toggle("hidden");
+    }
+  }
+
+  // Sidebar toggle
+  const toggleButton = document.getElementById('sidebar-toggle-button');
+  const sidebar = document.getElementById('logo-sidebar');
+
+  if (toggleButton && sidebar) {
+    sidebar.classList.remove('-translate-x-full');
+    sidebar.classList.add('translate-x-0');
+
+    toggleButton.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      sidebar.classList.toggle('translate-x-0');
+    });
+  }
+
+  // Text truncation
+  const truncateText = () => {
+    const textElement = document.getElementById('truncated-text');
+    if (textElement) {
+      const text = textElement.textContent;
+      if (text.length > 20) {
+        textElement.textContent = text.substring(0, 20) + '...';
+      }
+    }
+  };
+  truncateText();
+
+// Add CSS for shrink effect
+const style = document.createElement('style');
+style.textContent = `
+  .menu-item-button.shrink {
+    transform: scale(0.95);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+`;
+document.head.appendChild(style);
+
+// Menu item button click handlers
+const menuItemButtons = document.querySelectorAll('.menu-item-button');
+
+menuItemButtons.forEach(button => {
+  button.addEventListener('click', function() {
+    const isActive = this.classList.contains('active');
+
+    // Reset all buttons
+    menuItemButtons.forEach(btn => btn.classList.remove('shrink', 'active'));
+
+    // If it wasn't active, apply shrink to others
+    if (!isActive) {
+      menuItemButtons.forEach(btn => {
+        if (btn !== this) {
+          btn.classList.add('shrink');
+        }
+      });
+      this.classList.add('active'); // Mark this as active
+    }
+  });
+});
+
+});
+</script>
