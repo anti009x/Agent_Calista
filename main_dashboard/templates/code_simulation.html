@@ -41,11 +41,11 @@
 
 
   
- <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
-  <script src="{% static 'pyodide/console.py' %}"></script> 
+ {% comment %} <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+  <script src="{% static 'pyodide/console.py' %}"></script>  {% endcomment %}
 
   <script>
- // Global variable for Pyodide
+ {% comment %} // Global variable for Pyodide
     let pyodide = null;
     
     // Load the Pyodide interpreter asynchronously on page load
@@ -75,7 +75,7 @@ def run_and_capture(code):
     
     // Call loadPython when the page loads
     window.addEventListener('load', loadPython);
-    
+     {% endcomment %}
     // Function to execute a Python command asynchronously and capture stdout
     async function runPythonCommand(command) {
       try {

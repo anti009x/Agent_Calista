@@ -17,7 +17,7 @@
                     <img src="{% static 'images/plus.png' %}" alt="Add" width="15" class="filter invert">
                 </button>
                 
-                <button type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                <button id="web-search-btn" type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700 active:bg-blue-500 active:text-white" onclick="this.classList.toggle('bg-blue-500'); this.classList.toggle('text-white');">
                     <img src="{% static 'images/web.png' %}" alt="Search" class="w-5 h-5 mr-2 filter invert">
                     <span class="text-xs">Web Search</span>
                 </button>
@@ -68,6 +68,7 @@
 
 
 
+
 <script>
   function getNewResponseContainer() {
     const template = document.getElementById('ai_response-template');
@@ -77,6 +78,10 @@
     const newResponse = conversationWrapper.lastElementChild;
     return newResponse.querySelector('.ai_message-text');
   }
+
+  // Retrieve the web search button if it exists
+  const button_web_search = document.getElementById('web-search-btn');
+  let webSearchEnabled = false;
 
   function getUserMessage() {
     const template = document.getElementById('response-template_user');
@@ -96,7 +101,7 @@
     const editButton = document.getElementById('edit-button');
     const sendEditButton = editButton ? editButton.nextElementSibling : null;
 
-    function handleSubmit() {
+    function handleCombinedSubmit() {
       const message = chatInput.value.trim();
       if (!message) return;
 
@@ -114,47 +119,106 @@
         userMessageElement.closest('.response-container-user').style.display = 'flex';
       }
 
-      const targetElement = getNewResponseContainer();
-
-      fetch('/send_message/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({
-          message: message,
-          model: selectedModel
+      // Only send to normal endpoint if web search is disabled
+      if (!webSearchEnabled) {
+        const targetElementNormal = getNewResponseContainer();
+        fetch('/send_message/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({
+            message: message,
+            model: selectedModel
+          })
         })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Selected model not found or unavailable. Please choose another model.');
-        }
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Selected model not found or unavailable. Please choose another model.');
+          }
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder('utf-8');
 
-        function read() {
-          return reader.read().then(({done, value}) => {
-            if (done) {
-              chatInput.style.height = 'auto';
-              return;
-            }
-            let text = decoder.decode(value, {stream: true});
+          function read() {
+            return reader.read().then(({done, value}) => {
+              if (done) {
+                chatInput.style.height = 'auto';
+                return;
+              }
+              let text = decoder.decode(value, {stream: true});
+              if (targetElementNormal) {
+                targetElementNormal.textContent += text;
+                targetElementNormal.closest('.ai_response-container').style.display = 'flex';
+              }
+              return read();
+            });
+          }
+          return read();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error: ' + error.message + '\nPlease select a different model and try again.');
+        });
+      }
+      // Send to web search endpoint if enabled
+      else {
+        const targetElementWebSearch = getNewResponseContainer();
+        fetch('/send_message_web_search/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({
+            message: message,
+            model: selectedModel
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Selected model not found or unavailable. Please choose another model.');
+          }
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder('utf-8');
 
-            if (targetElement) {
-              targetElement.textContent += text;
-              targetElement.closest('.ai_response-container').style.display = 'flex';
-            }
-            return read();
-          });
+          function read() {
+            return reader.read().then(({done, value}) => {
+              if (done) {
+                chatInput.style.height = 'auto';
+                return;
+              }
+              let text = decoder.decode(value, {stream: true});
+              if (targetElementWebSearch) {
+                targetElementWebSearch.textContent += text;
+                targetElementWebSearch.closest('.ai_response-container').style.display = 'flex';
+              }
+              return read();
+            });
+          }
+          return read();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error: ' + error.message + '\nPlease select a different model and try again.');
+        });
+      }
+    }
+
+    if (button_web_search) {
+      button_web_search.addEventListener('click', function() {
+        console.log('Web search button clicked');
+        webSearchEnabled = !webSearchEnabled;
+        
+        // Toggle background color
+        if (!webSearchEnabled) {
+          this.style.backgroundColor = '';
+        } else {
+          this.style.backgroundColor = '#3b82f6';
         }
-        return read();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error: ' + error.message + '\nPlease select a different model and try again.');
       });
+    } else {
+      console.warn('Web search button (web-search-btn) not found.');
     }
 
     function getCookie(name) {
@@ -173,27 +237,27 @@
     }
 
     if (submitButton) {
-      submitButton.addEventListener('click', handleSubmit);
+      submitButton.addEventListener('click', handleCombinedSubmit);
     }
 
     if (chatInput) {
       chatInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
-          handleSubmit();
+          handleCombinedSubmit();
         }
       });
     }
 
     if (sendEditButton) {
-      sendEditButton.addEventListener('click', handleSubmit);
+      sendEditButton.addEventListener('click', handleCombinedSubmit);
     }
 
     if (editButton) {
       editButton.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
-          handleSubmit();
+          handleCombinedSubmit();
         }
       });
     }
