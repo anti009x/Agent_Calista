@@ -1,29 +1,18 @@
 {% load static %}
 
 
-
 <div id="mainContainer" class="flex flex-col h-screen">
-
-  <div class="flex-grow space-y-4 p-4 overflow-y-auto w-full" style="max-height: calc(100vh - 2rem);">
-
-    <br>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+  <div id="scrollable-container" class="flex-grow space-y-4 p-4 overflow-y-auto w-full" style="max-height: calc(100vh - 2rem); ">
     <div class="flex flex-col space-y-4 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <div class="flex items-start gap-10">
         <img src="{% static 'images/calista.png' %}" alt="Calista avatar" class="w-10 h-10 rounded-full flex-shrink-0 border-2 border-indigo-300">
         <div class="bg-gradient-to-r from-green-300 to-blue-300 text-gray-900 rounded-lg px-4 py-2 max-w-[80%] shadow-lg transform transition duration-300 hover:scale-105">
           <span class="text-sm font-semibold">
-            Welcome To C.A.L.I.S.T.A
+            
           </span>
         </div>
       </div>
-
 
       <!-- Container for user messages -->
       <div id="conversation-wrapper" class="space-y-8"></div>
@@ -55,17 +44,52 @@
             </button>
             <br>
             <span class="text-sm font-semibold whitespace-pre-wrap text-blue-400 ai_message-text"></span>
-
+            <span class="text-sm font-semibold whitespace-pre-wrap text-blue-400 "></span>
             <br>
           </div>
         </div>
       </template>
-
-
-      
     </div>
 
+    <script>
+      const scrollableContainer = document.getElementById('scrollable-container');
+      let lastScrollTop = scrollableContainer.scrollTop;
+      
+      // Function to scroll to bottom
+      function scrollToBottom() {
+        scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
+      }
 
+      // Initial scroll to bottom
+      scrollToBottom();
+
+      // Create observer to watch for new messages
+      const conversationObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.addedNodes.length > 0) {
+            // If new nodes are added, scroll to bottom
+            scrollToBottom();
+          }
+        });
+      });
+
+      // Start observing the conversation wrapper for changes
+      const conversationWrapper = document.getElementById('conversation-wrapper');
+      conversationObserver.observe(conversationWrapper, {
+        childList: true,
+        subtree: true
+      });
+      
+      scrollableContainer.addEventListener('scroll', () => {
+        const currentScrollTop = scrollableContainer.scrollTop;
+        if (currentScrollTop > lastScrollTop) {
+          console.log('Scrolling down');
+        } else if (currentScrollTop < lastScrollTop) {
+          console.log('Scrolling up');
+        }
+        lastScrollTop = currentScrollTop;
+      });
+    </script>
 
     <script>
       (function() {
@@ -81,6 +105,7 @@
       })();
     </script>
   </div>
+
 
   <!-- Fixed Open Modal Button -->
 
@@ -131,6 +156,8 @@
 
   // Function to submit an edited message to the server
   function submitEditedMessage(message) {
+    const chatInput = document.getElementById('chat-input');
+    const submitButton = chatInput ? chatInput.nextElementSibling : null;
     if (!message) return;
     const modelSelect = document.getElementById('model-select');
     const selectedModel = modelSelect.value;
@@ -138,45 +165,115 @@
       alert("Please manually select a model before sending a message");
       return;
     }
-    // Use the same function you use when sending a new message.
     // Assumes getNewResponseContainer() is globally available to create the bot response container.
-    const targetElement = getNewResponseContainer();
+    // Relies on a global 'webSearchEnabled' variable that is set up elsewhere (e.g., on page load)
+    if (!webSearchEnabled) {
+      const targetElementNormal = getNewResponseContainer();
+      fetch('/send_message/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken')
+              },
+              body: JSON.stringify({
+                  message: message,
+                  model: selectedModel
+              })
+          })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Selected model not found or unavailable. Please choose another model.');
+              }
+              const reader = response.body.getReader();
+              const decoder = new TextDecoder('utf-8');
 
-    fetch('/send_message/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken')
-      },
-      body: JSON.stringify({
-        message: message,
-        model: selectedModel
-      })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Selected model not found or unavailable. Please choose another model.');
-      }
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder('utf-8');
+              function read() {
+                  return reader.read().then(({ done, value }) => {
+                      if (done) {
+                          chatInput.style.height = 'auto';
+                          return;
+                      }
+                      let text = decoder.decode(value, { stream: true });
+                      if (targetElementNormal) {
+                          targetElementNormal.textContent += text;
+                          targetElementNormal.closest('.ai_response-container').style.display = 'flex';
+                      }
+                      return read();
+                  });
+              }
+              return read();
+          })
+          .catch(error => {
+              console.error('Error:', error);
+ 
+          });
+    } else {
+      const targetElementWebSearch = getNewResponseContainer();
+      fetch('/send_message_web_search/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken')
+              },
+              body: JSON.stringify({
+                  message: message,
+                  model: selectedModel
+              })
+          })
+          .then(final_response => {
+              if (!final_response.ok) {
+                  throw new Error('Selected model not found or unavailable. Please choose another model.');
+              }
+              const reader = final_response.body.getReader();
+              const decoder = new TextDecoder('utf-8');
 
-      function read() {
-        return reader.read().then(({ done, value }) => {
-          if (done) return;
-          let text = decoder.decode(value, { stream: true });
-          if (targetElement) {
-            targetElement.textContent += text;
-            targetElement.closest('.ai_response-container').style.display = 'flex';
-          }
-          return read();
-        });
-      }
-      return read();
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Error: ' + error.message + '\nPlease select a different model and try again.');
-    });
+              function read() {
+                  return reader.read().then(({ done, value }) => {
+                      if (done) {
+                          chatInput.style.height = 'auto';
+                          const accumulatedText = targetElementWebSearch.textContent;
+                          const linkRegex = /(https:\/\/[^\s]+)/g;
+                          const matches = [...accumulatedText.matchAll(linkRegex)];
+                          if (matches.length > 0) {
+                              const cleanedText = accumulatedText.replace(linkRegex, '');
+                              targetElementWebSearch.textContent = cleanedText;
+                              const textElements = document.querySelectorAll('.ai_message-text');
+
+                              const uniqueLinks = new Set(matches.map(match => match[0]));
+                              textElements.forEach(el => {
+                                  uniqueLinks.forEach(link => {
+                                      try {
+                                          if (!el.querySelector(`a[href="${link}"]`)) {
+                                              const a = document.createElement('a');
+                                              a.href = link;
+                                              a.textContent = link;
+                                              a.target = '_blank';
+                                              el.appendChild(a);
+                                              el.appendChild(document.createElement('br'));
+                                          }
+                                      } catch (error) {
+                                          console.error('Error:', error);
+                                      }
+                                  });
+                              });
+                          }
+                          return;
+                      }
+                      let text = decoder.decode(value, { stream: true });
+                      if (targetElementWebSearch) {
+                          targetElementWebSearch.textContent += text;
+                          targetElementWebSearch.closest('.ai_response-container').style.display = 'flex';
+                      }
+                      return read();
+                  });
+              }
+              return read();
+          })
+          .catch(error => {
+              console.error('Error:', error);
+
+          });
+    }
   }
 
   // Updated editMessage function for the edit button
@@ -207,6 +304,7 @@
     }
   }
 </script>
+
 
 <script>
   function copyText(button) {

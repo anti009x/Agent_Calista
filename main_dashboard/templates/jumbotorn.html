@@ -11,11 +11,38 @@
             <button type="submit" class="absolute right-4 bottom-4 bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500 p-2 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300">
                 <img src="{% static 'images/message.png' %}" alt="Send" width="23" class="filter invert">
             </button>
-
+            
             <div class="flex flex-wrap items-center mt-4 gap-3">
-                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 inline-flex items-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
-                    <img src="{% static 'images/plus.png' %}" alt="Add" width="15" class="filter invert">
-                </button>
+
+
+                <div class="relative inline-flex items-center">
+                    <input id="file_input" type="file" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 inline-flex items-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                    <img src="{% static 'images/plus.png' %}" alt="Add" width="15" class="filter invert absolute " style="left: 50%; transform: translateX(-50%);">
+                </div>
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    const fileInput = document.getElementById('file_input');
+                    
+                    // Remove the default "Choose File" button/text by injecting CSS that hides it
+                    var style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.innerHTML = "#file_input::-webkit-file-upload-button, #file_input::file-selector-button { display: none; } #file_input { color: transparent; width: 40px; }";
+                    document.head.appendChild(style);
+
+                    // Add change event listener to handle file selection
+                    fileInput.addEventListener('change', function() {
+                      if (this.files.length > 0) {
+                        // If file is selected, show the filename
+                        this.style.color = 'transparent';
+                      } else {
+                        // If no file or file is removed, make text white again
+                        this.style.color = 'transparent';
+                      }
+                    });
+                  });
+                </script>
+                    
+                  
                 
                 <button id="web-search-btn" type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700 active:bg-blue-500 active:text-white" onclick="this.classList.toggle('bg-blue-500'); this.classList.toggle('text-white');">
                     <img src="{% static 'images/web.png' %}" alt="Search" class="w-5 h-5 mr-2 filter invert">
@@ -63,6 +90,15 @@
         <div id="conversation-wrapper"></div>
     </div>
 </div>
+
+
+<script>
+    document.getElementById('add-btn').addEventListener('click', function() {
+        console.log('add button clicked');
+    });
+</script>
+
+
 
 <script src="{% static 'js/model_run.js' %}"></script>
 

@@ -1932,11 +1932,6 @@ select {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
-.text-blue-600 {
-  --tw-text-opacity: 1;
-  color: rgb(37 99 235 / var(--tw-text-opacity, 1));
-}
-
 .placeholder-gray-500::-moz-placeholder {
   --tw-placeholder-opacity: 1;
   color: rgb(107 114 128 / var(--tw-placeholder-opacity, 1));
@@ -2167,10 +2162,6 @@ h1 {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-}
-
-.hover\:underline:hover {
-  text-decoration-line: underline;
 }
 
 .hover\:opacity-80:hover {
