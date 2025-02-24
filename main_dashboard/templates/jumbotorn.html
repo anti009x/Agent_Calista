@@ -11,21 +11,138 @@
             <button type="submit" class="absolute right-4 bottom-4 bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500 p-2 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300">
                 <img src="{% static 'images/message.png' %}" alt="Send" width="23" class="filter invert">
             </button>
+            
+            <div class="flex flex-wrap items-center mt-4 gap-3 " >
 
-            <div class="flex flex-wrap items-center mt-4 gap-3">
-                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 inline-flex items-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
-                    <img src="{% static 'images/plus.png' %}" alt="Add" width="15" class="filter invert">
-                </button>
+
+                <div class="relative inline-flex items-center">
+                    <input id="file_input" name="file" type="file" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 inline-flex items-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                    <img src="{% static 'images/plus.png' %}" alt="Add" width="15" class="filter invert absolute " style="left: 50%; transform: translateX(-50%);">
+                </div>
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    const fileInput = document.getElementById('file_input');
+                    const text_area = document.getElementById('chat-input');
+                    let fileData = null;
+                    let previewContainer = null;
+                    
+                    // Create a FormData object to store files
+                    let formData = new FormData();
+                    
+                    // Hide the default file button/text by injecting CSS
+                    const style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.innerHTML = "#file_input::-webkit-file-upload-button, #file_input::file-selector-button { display: none; } #file_input { color: transparent; width: 40px; }";
+                    document.head.appendChild(style);
+
+                    fileInput.addEventListener('change', function() {
+                      // Remove any existing preview
+                      if (previewContainer) {
+                        previewContainer.remove();
+                        previewContainer = null;
+                      }
+
+                      if (this.files.length > 0) {
+                        // Get the file object directly
+                        const file = this.files[0];
+                        fileData = file;
+                        
+                        // Add the file object to FormData (this is what you'll send to your server)
+                        formData.set('file', file);
+
+                        // Create a preview container
+                        previewContainer = document.createElement('div');
+                        previewContainer.className = 'file-preview mt-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center gap-2 mb-4';
+                        
+                        // For images, use URL.createObjectURL to display the photo preview
+                        if (file.type.startsWith('image/')) {
+                          const img = document.createElement('img');
+                          img.src = URL.createObjectURL(file);
+                          img.className = 'w-10 h-10 object-cover rounded';
+                          previewContainer.appendChild(img);
+                        } else {
+                          // For other file types, display a generic file icon
+                          const fileIcon = document.createElement('div');
+                          fileIcon.className = 'w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded flex items-center justify-center';
+                          fileIcon.innerHTML = '📄';
+                          previewContainer.appendChild(fileIcon);
+                        }
+
+                        // Add file info (name & size)
+                        const fileInfo = document.createElement('div');
+                        fileInfo.className = 'flex-1';
+                        fileInfo.innerHTML = `
+                          <div class="text-sm font-medium text-gray-900 dark:text-white">${file.name}</div>
+                          <div class="text-xs text-gray-500 dark:text-gray-400">${(file.size/1024).toFixed(1)} KB</div>
+                        `;
+                        previewContainer.appendChild(fileInfo);
+
+                        // Add a remove button so the user can delete the attachment if needed
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'text-red-500 hover:text-red-700';
+                        removeBtn.innerHTML = '✕';
+                        removeBtn.onclick = function() {
+                          fileInput.value = '';
+                          previewContainer.remove();
+                          fileData = null;
+                          previewContainer = null;
+                          formData.delete('file');
+                        };
+                        previewContainer.appendChild(removeBtn);
+
+                        // Insert the preview container before the textarea
+                        text_area.parentNode.insertBefore(previewContainer, text_area);
+                        
+                        // Adjust the textarea height to accommodate the preview
+                        text_area.style.height = 'auto';
+                        text_area.style.height = (text_area.scrollHeight + previewContainer.offsetHeight) + 'px';
+                      } else {
+                        // If there is no file selected, clear the file data and reset the textarea height
+                        fileData = null;
+                        formData.delete('file');
+                        text_area.style.height = 'auto';
+                      }
+                    });
+                    
+                    // Handle newlines with shift+enter without interfering with the height adjustment
+                    text_area.addEventListener('keydown', function(e) {
+                      if (e.shiftKey && (e.key === 'Enter' || e.keyCode === 13)) {
+                        e.preventDefault();
+                        const start = text_area.selectionStart;
+                        const end = text_area.selectionEnd;
+                        const currentValue = text_area.value;
+                        text_area.value = currentValue.substring(0, start) + '\n' + currentValue.substring(end);
+                        text_area.selectionStart = text_area.selectionEnd = start + 1;
+                        text_area.style.height = 'auto';
+                        text_area.style.height = text_area.scrollHeight + 'px';
+                        if (previewContainer) {
+                          text_area.style.height = (text_area.scrollHeight + previewContainer.offsetHeight) + 'px';
+                        }
+                      }
+                    });
+                    
+                    // Adjust the textarea height on input
+                    text_area.addEventListener('input', function() {
+                      this.style.height = 'auto';
+                      this.style.height = this.scrollHeight + 'px';
+                      if (previewContainer) {
+                        this.style.height = (this.scrollHeight + previewContainer.offsetHeight) + 'px';
+                      }
+                    });
+                  });
+                </script>
+                  
                 
-                <button type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                <button id="web-search-btn" type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700 active:bg-blue-500 active:text-white" onclick="this.classList.toggle('bg-blue-500'); this.classList.toggle('text-white');">
                     <img src="{% static 'images/web.png' %}" alt="Search" class="w-5 h-5 mr-2 filter invert">
-                    <span class="text-xs">Web Search</span>
+                    <span class="text-xs">Web Search <span class="text-white">♾️</span> DeepThinking</span>
+                    <img src="{% static 'images/bulb.png' %}" alt="Search" class="w-5 h-5 mr-2 filter invert">
                 </button>
 
-                <button type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                {% comment %} <button type="button" class="inline-flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
                     <img src="{% static 'images/bulb.png' %}" alt="Reason" class="w-5 h-5 mr-2 filter invert">
                     <span class="text-xs">DeepThinking</span>
-                </button>
+                </button> {% endcomment %}
                 <div class="relative inline-flex items-center px-4 py-2 text-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-full text-[10px] dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:ring-gray-700">
                   <img src="{% static 'images/atom.png' %}" alt="Model" class="w-5 h-5 mr-2 filter invert">
                   <span class="text-[10px]">Model Choice</span>
@@ -63,139 +180,21 @@
     </div>
 </div>
 
+
+<script>
+    document.getElementById('add-btn').addEventListener('click', function() {
+        console.log('add button clicked');
+    });
+</script>
+
+
+
 <script src="{% static 'js/model_run.js' %}"></script>
 
 
+<script src="{% static 'js/model_post.js' %}"></script>
 
 
-<script>
-  function getNewResponseContainer() {
-    const template = document.getElementById('ai_response-template');
-    const clone = template.content.cloneNode(true);
-    const conversationWrapper = document.getElementById('conversation-wrapper');
-    conversationWrapper.appendChild(clone);
-    const newResponse = conversationWrapper.lastElementChild;
-    return newResponse.querySelector('.ai_message-text');
-  }
 
-  function getUserMessage() {
-    const template = document.getElementById('response-template_user');
-    const clone = template.content.cloneNode(true);
-    const conversationWrapper = document.getElementById('conversation-wrapper');
-    conversationWrapper.appendChild(clone);
-    const newUserMessage = conversationWrapper.lastElementChild;
-    return newUserMessage.querySelector('.user-message');
-  }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    const chatInput = document.getElementById('chat-input');
-    const submitButton = chatInput?.nextElementSibling;
-    const modelSelect = document.getElementById('model-select');
 
-    // Only try to get edit button elements if they exist
-    const editButton = document.getElementById('edit-button');
-    const sendEditButton = editButton ? editButton.nextElementSibling : null;
-
-    function handleSubmit() {
-      const message = chatInput.value.trim();
-      if (!message) return;
-
-      const selectedModel = modelSelect.value;
-      if (!selectedModel || selectedModel === "Select") {
-        alert("Please manually select a model before sending a message");
-        return;
-      }
-
-      chatInput.value = '';
-
-      const userMessageElement = getUserMessage();
-      if (userMessageElement) {
-        userMessageElement.textContent = message;
-        userMessageElement.closest('.response-container-user').style.display = 'flex';
-      }
-
-      const targetElement = getNewResponseContainer();
-
-      fetch('/send_message/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({
-          message: message,
-          model: selectedModel
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Selected model not found or unavailable. Please choose another model.');
-        }
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
-
-        function read() {
-          return reader.read().then(({done, value}) => {
-            if (done) {
-              chatInput.style.height = 'auto';
-              return;
-            }
-            let text = decoder.decode(value, {stream: true});
-
-            if (targetElement) {
-              targetElement.textContent += text;
-              targetElement.closest('.ai_response-container').style.display = 'flex';
-            }
-            return read();
-          });
-        }
-        return read();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error: ' + error.message + '\nPlease select a different model and try again.');
-      });
-    }
-
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
-      }
-      return cookieValue;
-    }
-
-    if (submitButton) {
-      submitButton.addEventListener('click', handleSubmit);
-    }
-
-    if (chatInput) {
-      chatInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          handleSubmit();
-        }
-      });
-    }
-
-    if (sendEditButton) {
-      sendEditButton.addEventListener('click', handleSubmit);
-    }
-
-    if (editButton) {
-      editButton.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          handleSubmit();
-        }
-      });
-    }
-  });
-</script>
