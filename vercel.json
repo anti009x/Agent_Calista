@@ -3,11 +3,10 @@
       "env": {
         "DJANGO_SETTINGS_MODULE": "web_agent.settings"
       },
-      "cmd": "pip install -r requirements.txt && python manage.py tailwind start && python manage.py collectstatic --noinput"
+      "cmd": "./build_files.sh"
     },
     "routes": [
       { "src": "/static/(.*)", "dest": "/static/$1" },
       { "src": "/(.*)", "dest": "index.html" }
     ]
-  }
-  
+  }  
