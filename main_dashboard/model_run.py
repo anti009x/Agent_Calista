@@ -20,13 +20,17 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 @require_http_methods(["POST"])
 def process_message(request):
     try:
-        data = json.loads(request.body)
-        prompt = data.get('message')
-        model_choice = data.get('model', 'calista:latest')  
+        # Check if the request is multipart (FormData submission)
+        if request.content_type.startswith('multipart/form-data'):
+            prompt = request.POST.get('message')
+            model_choice = request.POST.get('model', 'calista:latest')
+        else:
+            data = json.loads(request.body)
+            prompt = data.get('message')
+            model_choice = data.get('model', 'calista:latest')
         
         if not prompt:
             return JsonResponse({'error': 'No message provided'}, status=400)
-
 
         response_stream = ollama.generate(
             model=model_choice.lower(),
@@ -34,12 +38,10 @@ def process_message(request):
             stream=True
         )
 
-
         def stream_response():
             for chunk in response_stream:
                 text = chunk.get('response', '')
                 yield text
-
 
         return StreamingHttpResponse(stream_response(), content_type='text/plain')
         
