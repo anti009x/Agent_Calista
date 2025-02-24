@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-=4#=d!0^uo)$^md=()ujhle22t!fbb@$#1xj-j7+p_+a_d%-fp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['Agent_Calista.vercel.app', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -125,7 +126,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
@@ -144,3 +145,4 @@ INTERNAL_IPS = [
     "127.0.0.1",
 
 ]
+# Command to collect static files should be run from command line, not in settings.py

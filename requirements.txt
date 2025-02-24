@@ -1,1 +1,10 @@
+Django
+django-tailwind
+requests
 django-tailwind[reload]
+ollama
+litellm
+beautifulsoup4
+urllib3
+
+
