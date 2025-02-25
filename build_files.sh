@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "BUILD START"
-python -m pip install -r requirements.txt
-python manage.py tailwind init
-python manage.py tailwind install
-python manage.py tailwind build
-python manage.py collectstatic --noinput --clear
+python3 -m pip install -r requirements.txt
+python3 manage.py tailwind init
+python3 manage.py tailwind install
+python3 manage.py tailwind build
+python3 manage.py collectstatic --noinput --clear
 echo "BUILD END"
