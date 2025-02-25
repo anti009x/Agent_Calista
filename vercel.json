@@ -14,16 +14,8 @@
       {
         "src": "manage.py",
         "use": "@vercel/python"
-      },
-      {
-        "src": "package.json",
-        "use": "@vercel/node"
-      },
-      {
-        "src": "manage.py tailwind build",
-        "use": "@vercel/python"
       }
-
+      
       
     ],
     "routes": [
