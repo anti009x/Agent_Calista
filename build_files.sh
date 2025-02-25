@@ -1,8 +1,13 @@
 #!/bin/bash
 echo "BUILD START"
-python3 -m pip install -r requirements.txt
-python3 manage.py tailwind init
-python3 manage.py tailwind install
-python3 manage.py tailwind build
-python3 manage.py collectstatic --noinput --clear
+python -m pip install -r requirements.txt
+python manage.py tailwind init
+python manage.py tailwind install
+python manage.py tailwind build
+# Create the staticfiles_build directory
+mkdir -p staticfiles_build
+# Collect static files to the staticfiles_build directory
+python manage.py collectstatic --noinput --clear --settings=web_agent.settings
+# Copy all static files to staticfiles_build
+cp -r staticfiles/* staticfiles_build/
 echo "BUILD END"
