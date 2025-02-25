@@ -20,14 +20,9 @@
         "use": "@vercel/node"
       },
       {
-        "src": "build_files.sh",
-        "use": "@vercel/bash"
-      },
-      {
         "src": "manage.py tailwind build",
         "use": "@vercel/python"
       }
-      
 
       
     ],
