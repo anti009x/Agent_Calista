@@ -12,7 +12,7 @@
         "use": "@vercel/static"
       },
       {
-        "src": "manage.py",
+        "src": "manage.py tailwind start",
         "use": "@vercel/python"
       }
       
