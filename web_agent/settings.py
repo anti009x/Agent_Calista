@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-=4#=d!0^uo)$^md=()ujhle22t!fbb@$#1xj-j7+p_+a_d%-fp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Agent_Calista.vercel.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['agent-calista-git-main-anti009xs-projects.vercel.app', 'localhost', '127.0.0.1']
 
 
 
