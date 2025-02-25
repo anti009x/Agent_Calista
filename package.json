@@ -1,8 +1,17 @@
 {
+  
   "scripts": {
     "build": "bash build_files.sh"
   },
+  "name": "tailwind-build",
+  "version": "1.0.0",
+  "engines": {
+    "node": "22"
+  },
   "devDependencies": {
+    "tailwindcss": "^3.0.0",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0",
     "cross-env": "^7.0.3"
   }
   
