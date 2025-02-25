@@ -139,7 +139,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TAILWIND_APP_NAME = 'theme'
 
-NPM_BIN_PATH = r"C:\Users\Rizky Sulaeman\AppData\Roaming\npm\npm.cmd"
+NPM_BIN_PATH = "npm"
+
 
 INTERNAL_IPS = [
     "127.0.0.1",
